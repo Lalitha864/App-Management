@@ -1,0 +1,33 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  color: #000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+header,
+section,
+footer {
+  padding: 1em;
+  text-align: center;
+}
+
+button {
+  margin-left: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .dark-mode {
+        background-color: #121212;
+        color: white;
+      }
+      input[type="text"],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+      }
+      .task-list {
+        list-style: none;
+        padding: 0;
+      }
+      .task-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .task-list li.completed {
+        text-decoration: line-through;
+        color: gray;
+      }
+      progress {
+        width: 100%;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body class="<%= darkMode ? 'dark-mode' : '' %>">
+    <div class="container">
+      <!-- Theme Toggle -->
+      <form action="/toggle-dark-mode" method="POST">
+        <button type="submit">Toggle Dark Mode</button>
+      </form>
+
+      <!-- Name Input -->
+      <div>
+        <form action="/set-name" method="POST">
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter your name"
+            value="<%= name %>"
+            required
+          />
+          <button type="submit">Set Name</button>
+        </form>
+        <h1>Welcome, <%= name || 'Guest' %>!</h1>
+      </div>
+
+      <!-- Task Management -->
+      <div>
+        <form action="/add-task" method="POST">
+          <input
+            type="text"
+            name="task"
+            placeholder="Add a new task"
+            required
+          />
+          <button type="submit">Add Task</button>
+        </form>
+
+        <!-- Task List -->
+        <ul class="task-list">
+          <% tasks.forEach(task => { %>
+          <li class="<%= task.completed ? 'completed' : '' %>">
+            <%= task.name %>
+            <form
+              action="/toggle-complete/<%= task.id %>"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit">
+                <%= task.completed ? 'Undo' : 'Complete' %>
+              </button>
+            </form>
+            <form
+              action="/edit-task/<%= task.id %>"
+              method="POST"
+              style="display: inline"
+            >
+              <input type="text" name="updatedTask" value="<%= task.name %>" />
+              <button type="submit">Edit</button>
+            </form>
+            <form
+              action="/delete-task/<%= task.id %>"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit">Delete</button>
+            </form>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <!-- Progress Bar -->
+      <div>
+        <progress value="<%= progress %>" max="100"></progress>
+        <p><%= Math.round(progress) %>% Completed</p>
+      </div>
+
+      <!-- Toggle Pending/Completed View -->
+      <button id="toggleTaskView">Show Completed Tasks</button>
+    </div>
+
+    <script>
+      // Toggle between completed and pending tasks
+      document
+        .getElementById("toggleTaskView")
+        .addEventListener("click", () => {
+          document.querySelectorAll(".completed").forEach((task) => {
+            task.style.display =
+              task.style.display === "none" ? "flex" : "none";
+          });
+        });
+    </script>
+  </body>
+</html>
